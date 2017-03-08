@@ -1,0 +1,14 @@
+Precondition: ID is an identity column in the table
+RunID defines unique value. Below query removes all duplicate RunID except the one last entered.
+
+Query:
+
+delete from TestRunData where [ID] in
+                                (
+                                select [ID] from(
+                                select *,
+                                RANK() OVER(PARTITION BY [RunID] ORDER BY [ID] desc)rank
+                                From TestRunData
+                                )T
+                                where rank > 1
+                                )
